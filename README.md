@@ -9,3 +9,9 @@
 3. In UserComp brings todo for each user (limited to 5 todos)
 4. Checks if todos are completed, and paints border green if so, else red
 5. Filters users by query in search input, checks in name and email
+
+## User Component
+
+1. Added a hidden div with address data of each user
+2. If Other Data is reached by mouse over, the address data appears
+3. If Other Data is clicked, the div dissappears

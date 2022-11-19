@@ -8,7 +8,6 @@ let userUrl = "https://jsonplaceholder.typicode.com/users";
 const UsersComp = () => {
     const [users, setUsers] = useState([]);
     const [query, setQuery] = useState("");
-    // const [posts, setPosts] = useState([]);
 
     useEffect(() => {
         const getAllUsers = async () => {
@@ -16,11 +15,6 @@ const UsersComp = () => {
             setUsers(usersData);
         };
 
-        // const getAllPosts = async () => {
-        //     const { data: postsData } = await getAll(postsUrl);
-        //     setPosts(postsData);
-        // };
-        // getAllTodos();
         getAllUsers();
     }, []);
 
@@ -43,12 +37,7 @@ const UsersComp = () => {
                         user.email.toLowerCase().includes(query)
                 )
                 .map(user => (
-                    <UserComp
-                        key={user.id}
-                        user={user}
-                        // post={posts.filter(post => post.userId === user.id)}
-                        // todo={todos.filter(todo => todo.userId === user.id)}
-                    />
+                    <UserComp key={user.id} user={user} />
                 ))}
         </div>
     );
