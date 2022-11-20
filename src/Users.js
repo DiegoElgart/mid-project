@@ -3,7 +3,7 @@ import UserComp from "./User";
 import { getAll } from "./utils/getData";
 
 let userUrl = "https://jsonplaceholder.typicode.com/users";
-// let postsUrl = "https://jsonplaceholder.typicode.com/posts";
+
 
 const UsersComp = () => {
     const [users, setUsers] = useState([]);

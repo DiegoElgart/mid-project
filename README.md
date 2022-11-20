@@ -15,3 +15,4 @@
 1. Added a hidden div with address data of each user
 2. If Other Data is reached by mouse over, the address data appears
 3. If Other Data is clicked, the div dissappears
+4. Added functionality to Update and Delete buttons.
