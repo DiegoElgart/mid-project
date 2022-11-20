@@ -18,6 +18,23 @@ const UsersComp = () => {
         getAllUsers();
     }, []);
 
+    const updateUser = (id, newName, newEmail) => {
+        console.log(id, newName, newEmail);
+        const updatedUsers = users.map(user => {
+            if (id === user.id) {
+                return { ...user, name: newName, email: newEmail };
+            }
+            return user;
+        });
+        setUsers(updatedUsers);
+    };
+
+    const deleteUser = id => {
+        const deletedUser = users.filter(user => {
+            return user.id !== id;
+        });
+        setUsers(deletedUser);
+    };
     return (
         <div>
             <div className='header' style={{ height: "25px" }}>
@@ -37,7 +54,12 @@ const UsersComp = () => {
                         user.email.toLowerCase().includes(query)
                 )
                 .map(user => (
-                    <UserComp key={user.id} user={user} />
+                    <UserComp
+                        key={user.id}
+                        user={user}
+                        updateUser={updateUser}
+                        deleteUser={deleteUser}
+                    />
                 ))}
         </div>
     );

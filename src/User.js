@@ -2,10 +2,12 @@ import React, { useEffect, useState } from "react";
 import { getItemById } from "./utils/getData";
 
 let todosUrl = "https://jsonplaceholder.typicode.com/todos";
-const UserComp = ({ user }) => {
+const UserComp = ({ user, updateUser, deleteUser }) => {
     const [isCompleted, setIsCompleted] = useState(false);
     const [todos, setTodos] = useState([]);
     const [isVisible, setIsVisible] = useState(false);
+    const [newName, setNewName] = useState(user.name);
+    const [newEmail, setNewEmail] = useState(user.email);
 
     useEffect(() => {
         const getAllTodos = async () => {
@@ -32,7 +34,13 @@ const UserComp = ({ user }) => {
         };
         checkIfComplete();
     }, [todos]);
-
+    const handleUpdate = () => {
+        //console.log(user.id, newName, newEmail);
+        updateUser(user.id, newName, newEmail);
+    };
+    const handeleDelete = () => {
+        deleteUser(user.id);
+    };
     return (
         <div
             style={{
@@ -40,14 +48,21 @@ const UserComp = ({ user }) => {
                 padding: "5px",
                 margin: "10px",
                 border: `4px solid ${isCompleted ? "green" : "red"} `,
-            }}
-        >
+            }}>
             <h5>ID:{user.id} </h5>
             <label>Name :</label>
-            <input type='text' defaultValue={user.name} />
+            <input
+                type='text'
+                defaultValue={user.name}
+                onChange={e => setNewName(e.target.value)}
+            />
             <br />
             <label>Email: </label>
-            <input type='text' defaultValue={user.email} />
+            <input
+                type='text'
+                defaultValue={user.email}
+                onChange={e => setNewEmail(e.target.value)}
+            />
 
             <br />
             <br />
@@ -59,12 +74,11 @@ const UserComp = ({ user }) => {
                     margin: "15px",
                 }}
                 onMouseOver={e => setIsVisible(true)}
-                onClick={e => setIsVisible(false)}
-            >
+                onClick={e => setIsVisible(false)}>
                 Other Data
             </div>
-            <input type='button' value='Update' />
-            <input type='button' value='Delete' />
+            <input type='button' value='Update' onClick={handleUpdate} />
+            <input type='button' value='Delete' onClick={handeleDelete} />
             <br />
             <div
                 style={{
@@ -74,8 +88,7 @@ const UserComp = ({ user }) => {
                     padding: "15px",
                     margin: "5px",
                     display: `${isVisible ? "block" : "none"}`,
-                }}
-            >
+                }}>
                 <label>Street :</label>
                 <input type='text' defaultValue={user.address.street} />
                 <br />
