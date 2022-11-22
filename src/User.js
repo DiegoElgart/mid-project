@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import TodoComp from "./Todo";
+import PostComp from "./Post";
 import { getItemById } from "./utils/getData";
 
 let todosUrl = "https://jsonplaceholder.typicode.com/todos";
@@ -24,7 +25,7 @@ const UserComp = ({ user, updateUser, deleteUser }) => {
         };
         getAllTodos();
         getAllPosts();
-    }, []);
+    }, [user.id]);
 
     useEffect(() => {
         let counter = 0;
@@ -40,10 +41,22 @@ const UserComp = ({ user, updateUser, deleteUser }) => {
                 return counter;
             });
         };
+
         checkIfComplete();
-    }, [todos]);
+    }, [todos, isCompleted]);
+
+    const markComplete = id => {
+        const index = todos.findIndex(todo => todo.id === id);
+        if (index !== -1) {
+            todos[index].completed = true;
+            setTodos(todos);
+
+            //console.log(todos[index].completed);
+            //  setTodos(...todos, (todos[index].completed = true));
+            // console.log(todos);
+        }
+    };
     const handleUpdate = () => {
-        //console.log(user.id, newName, newEmail);
         updateUser(user.id, newName, newEmail);
     };
     const handeleDelete = () => {
@@ -58,6 +71,7 @@ const UserComp = ({ user, updateUser, deleteUser }) => {
                     width: "20%",
                     padding: "5px",
                     margin: "10px",
+                    height: "300px",
                     border: `4px solid ${isCompleted ? "green" : "red"} `,
                     backgroundColor: `${isClicked ? "orange" : "white"}`,
                 }}>
@@ -111,15 +125,33 @@ const UserComp = ({ user, updateUser, deleteUser }) => {
                     <input type='text' defaultValue={user.address.zipcode} />
                 </div>
             </div>
-            <div className='postsAndtodos'>
-                {isClicked ? (
-                    <div style={{ border: "3px solid black" }}>
-                        <h5>Todos - {user.id}</h5>
-                        {todos.map(todo => (
-                            <TodoComp key={todo.id} todo={todo} />
-                        ))}
-                    </div>
-                ) : null}
+            <div className='container' style={{ width: "400px" }}>
+                <div className='todos'>
+                    {isClicked ? (
+                        <div style={{ border: "3px solid black" }}>
+                            <h5>Todos - {user.id}</h5>
+                            {todos.map(todo => (
+                                <TodoComp
+                                    key={todo.id}
+                                    todo={todo}
+                                    markComplete={markComplete}
+                                />
+                            ))}
+                        </div>
+                    ) : null}
+                </div>
+                <br />
+                <br />
+                <div className='posts'>
+                    {isClicked ? (
+                        <div style={{ border: "3px solid gray" }}>
+                            <h5>Posts - {user.id}</h5>
+                            {posts.map(post => (
+                                <PostComp key={post.id} post={post} />
+                            ))}
+                        </div>
+                    ) : null}
+                </div>
             </div>
         </div>
     );
