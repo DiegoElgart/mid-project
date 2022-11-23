@@ -28,18 +28,14 @@ const UserComp = ({ user, updateUser, deleteUser }) => {
     }, [user.id]);
 
     useEffect(() => {
-        let counter = 0;
         const checkIfComplete = () => {
-            todos.map(todo => {
-                if (todo.completed) counter++;
-                let todoLength = Object.keys(todos).length;
-                if (counter === todoLength) {
-                    setIsCompleted(true);
-                } else {
-                    setIsCompleted(false);
-                }
-                return counter;
-            });
+            const completed = todos.filter(
+                todo => todo.userId === user.id && todo.completed === true
+            );
+            if (completed.length === todos.length) {
+                setIsCompleted(true);
+                console.log(completed);
+            }
         };
 
         checkIfComplete();
@@ -50,10 +46,6 @@ const UserComp = ({ user, updateUser, deleteUser }) => {
         if (index !== -1) {
             todos[index].completed = true;
             setTodos(todos);
-
-            //console.log(todos[index].completed);
-            //  setTodos(...todos, (todos[index].completed = true));
-            // console.log(todos);
         }
     };
     const handleUpdate = () => {
