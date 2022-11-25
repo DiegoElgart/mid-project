@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import TodoComp from "./Todo";
 import PostComp from "./Post";
+import NewTodo from "./newTodo";
+import NewPost from "./newPost";
 import { getItemById } from "./utils/getData";
 
 let todosUrl = "https://jsonplaceholder.typicode.com/todos";
@@ -13,6 +15,8 @@ const UserComp = ({ user, updateUser, deleteUser }) => {
     const [newName, setNewName] = useState(user.name);
     const [newEmail, setNewEmail] = useState(user.email);
     const [isClicked, setIsClicked] = useState(false);
+    const [isAddTodo, setIsAddTodo] = useState(false);
+    const [isAddPost, setIsAddPost] = useState(false);
 
     useEffect(() => {
         const getAllTodos = async () => {
@@ -25,27 +29,33 @@ const UserComp = ({ user, updateUser, deleteUser }) => {
         };
         getAllTodos();
         getAllPosts();
-    }, [user.id]);
+    }, []);
 
     useEffect(() => {
+        let counter = 0;
         const checkIfComplete = () => {
-            const completed = todos.filter(
-                todo => todo.userId === user.id && todo.completed === true
-            );
-            if (completed.length === todos.length) {
-                setIsCompleted(true);
-                console.log(completed);
-            }
+            todos.map(todo => {
+                if (todo.completed) {
+                    counter++;
+                }
+
+                if (counter >= todos.length) {
+                    setIsCompleted(true);
+                } else {
+                    setIsCompleted(false);
+                }
+                return counter;
+            });
         };
 
         checkIfComplete();
-    }, [todos, isCompleted]);
+    }, [todos, posts]);
 
     const markComplete = id => {
         const index = todos.findIndex(todo => todo.id === id);
         if (index !== -1) {
             todos[index].completed = true;
-            setTodos(todos);
+            setTodos([...todos], todos[index].completed);
         }
     };
     const handleUpdate = () => {
@@ -54,6 +64,26 @@ const UserComp = ({ user, updateUser, deleteUser }) => {
     const handeleDelete = () => {
         deleteUser(user.id);
     };
+
+    const addTodoMode = () => {
+        setIsClicked(!isClicked);
+        setIsAddTodo(!isAddTodo);
+    };
+    const addPostMode = () => {
+        setIsClicked(!isClicked);
+        setIsAddPost(!isAddPost);
+    };
+    const addTodo = todo => {
+        setTodos([...todos, todo]);
+        setIsAddTodo(!isAddTodo);
+        setIsClicked(!isClicked);
+    };
+    const addPost = post => {
+        setPosts([...posts, post]);
+        setIsAddPost(!isAddPost);
+        setIsClicked(!isClicked);
+    };
+
     return (
         <div className='container' style={{ display: "flex" }}>
             <div
@@ -66,7 +96,8 @@ const UserComp = ({ user, updateUser, deleteUser }) => {
                     height: "300px",
                     border: `4px solid ${isCompleted ? "green" : "red"} `,
                     backgroundColor: `${isClicked ? "orange" : "white"}`,
-                }}>
+                }}
+            >
                 <h5>ID:{user.id} </h5>
                 <label>Name :</label>
                 <input
@@ -87,12 +118,16 @@ const UserComp = ({ user, updateUser, deleteUser }) => {
                 <div
                     style={{
                         backgroundColor: "lightgrey",
-                        height: "20px",
+                        height: "30px",
                         width: "80px",
                         margin: "15px",
+                        textAlign: "center",
+                        border: "1px solid black",
+                        borderRadius: "5px",
                     }}
                     onMouseOver={e => setIsVisible(true)}
-                    onClick={e => setIsVisible(false)}>
+                    onClick={e => setIsVisible(false)}
+                >
                     Other Data
                 </div>
                 <input type='button' value='Update' onClick={handleUpdate} />
@@ -106,7 +141,8 @@ const UserComp = ({ user, updateUser, deleteUser }) => {
                         padding: "15px",
                         margin: "5px",
                         display: `${isVisible ? "block" : "none"}`,
-                    }}>
+                    }}
+                >
                     <label>Street :</label>
                     <input type='text' defaultValue={user.address.street} />
                     <br />
@@ -121,15 +157,29 @@ const UserComp = ({ user, updateUser, deleteUser }) => {
                 <div className='todos'>
                     {isClicked ? (
                         <div style={{ border: "3px solid black" }}>
+                            <input
+                                type='button'
+                                value='Add'
+                                onClick={addTodoMode}
+                            />
                             <h5>Todos - {user.id}</h5>
-                            {todos.map(todo => (
-                                <TodoComp
-                                    key={todo.id}
-                                    todo={todo}
-                                    markComplete={markComplete}
-                                />
-                            ))}
+                            {todos &&
+                                todos.map(todo => (
+                                    <TodoComp
+                                        key={todo.id}
+                                        todo={todo}
+                                        markComplete={markComplete}
+                                    />
+                                ))}
                         </div>
+                    ) : null}
+                    {isAddTodo && !isClicked ? (
+                        <NewTodo
+                            addTodoMode={addTodoMode}
+                            addTodo={addTodo}
+                            userId={user.id}
+                            todos={todos.length}
+                        />
                     ) : null}
                 </div>
                 <br />
@@ -137,11 +187,24 @@ const UserComp = ({ user, updateUser, deleteUser }) => {
                 <div className='posts'>
                     {isClicked ? (
                         <div style={{ border: "3px solid gray" }}>
+                            <input
+                                type='button'
+                                value='Add'
+                                onClick={addPostMode}
+                            />
                             <h5>Posts - {user.id}</h5>
                             {posts.map(post => (
                                 <PostComp key={post.id} post={post} />
                             ))}
                         </div>
+                    ) : null}
+                    {isAddPost && !isClicked ? (
+                        <NewPost
+                            addPostMode={addPostMode}
+                            addPost={addPost}
+                            userId={user.id}
+                            posts={posts.length}
+                        />
                     ) : null}
                 </div>
             </div>

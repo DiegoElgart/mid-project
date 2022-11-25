@@ -16,3 +16,17 @@
 2. If Other Data is reached by mouse over, the address data appears
 3. If Other Data is clicked, the div dissappears
 4. Added functionality to Update and Delete buttons.
+
+## Todo & Post Components
+
+1. Allow to see all todos/posts
+2. Todos also count with Mark Completed button that will change status of TODO
+
+## New Todo & New Post Components
+
+1. Adds todo/post with all the requirements from each object
+2. Updates both states
+
+## New User Component
+
+1. Adds a new user only using name and email, the address data is added by updating
